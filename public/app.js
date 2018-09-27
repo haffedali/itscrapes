@@ -3,3 +3,36 @@ $.getJSON("/articles", function(data){
         $("#articles").append("<p data-id='" + data[i]._id + "'>"  +data[i].title+ "<br />" + data[i].link + "</p>");
     }
 })
+
+$(document).on("click", "p", function(){
+    $("#comments").empty();
+    var thisId = $(this).attr("data-id");
+    // thisId = "ObjectId(" + '"' + thisId + '"' + ")";
+    console.log(thisId)
+    $.ajax({
+        method: "GET",
+        url: "/articles/" + thisId,
+    })
+      .then(function(data){
+        //   console.log(data);
+          $("#comments").append("<h2>" + data.title + "</h2>");
+          $("#comments").append("<textarea id='bodyinput' name='body'></textarea>");
+          $("#comments").append("<button data-id='"+data._id+"' id='savecomment'>Save Sucka!</button>");
+      });
+});
+
+$(document).on("click", "#savecomment", function(){
+    var thisId = $(this).attr("data-id");
+    $.ajax({
+        method: "POST",
+        url: "/articles/" + thisId,
+        data: {
+            body: $("#bodyinput").val()
+        }
+    })
+        .then(function(data){
+            console.log(data)
+            $("#comments").empty();
+        });
+    $("#bodyinput").val("")
+})

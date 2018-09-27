@@ -52,17 +52,28 @@ app.get('/scrape', function(req, res) {
     })
 })
 app.get("/articles", function(req, res) {
-    // Grab every document in the Articles collection
     db.Article.find({})
       .then(function(dbArticle) {
-        // If we were able to successfully find Articles, send them back to the client
         res.json(dbArticle);
       })
       .catch(function(err) {
-        // If an error occurred, send it to the client
         res.json(err);
       });
   });
+
+app.get("/articles/:id", function(req, res){
+      db.Article.findOne({_id: req.params.id})
+        .then(function(dbArticle){
+            res.json(dbArticle);
+        })
+        .catch(function(err){
+            res.json(err)
+        })
+  })
+
+app.post("/articles/:id", function(req, res){
+    db.Comments.create(req.body)
+})
 
 
 
