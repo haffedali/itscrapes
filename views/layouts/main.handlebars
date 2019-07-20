@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Scrapes</title>
+
+	{{!-- With the css in the public folder, and our express serving everything to our folder (by creating get routes behind the scenes)
+	we can simply link to our style sheet using it's name --}}
+	<link rel='stylesheet' type='text/css' href='style.css'>
+	<style></style>
+	</head>
+	<body>
+		{{{ body }}}
+
+  {{!-- Beneath the handlebars body and before the <body> tag closes, add our jqeury and app.js file (All our good 'ol DOM logic')  --}}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="app.js"></script>
+	</body>
+</html>
+

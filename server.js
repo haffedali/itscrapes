@@ -17,7 +17,16 @@ var PORT = 5555;
 // Initialize Express
 var app = express();
 
-// Configure middleware
+
+
+
+// here we set up the server to use handlebars as our view engine for html content
+var exphbs = require("express-handlebars")
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+
+
 
 // Use morgan logger for logging requests
 app.use(logger("dev"));
@@ -29,7 +38,8 @@ app.use(express.static("public"));
 // Connect to the Mongo DB
 mongoose.connect("mongodb://localhost/itscrapes", { useNewUrlParser: true });
 app.get('/', function(req,res){
-    res.sendfile('/index.html')
+    res.render('scraped')
+    // res.sendfile('/index.html')
 })
 app.get('/scrape', function(req, res) {
     axios.get("http://books.toscrape.com/").then(function(response){
@@ -63,7 +73,9 @@ app.get("/articles", function(req, res) {
 
 app.get("/articles/:id", function(req, res){
       db.Article.findOne({_id: req.params.id})
+        .populate("comments")
         .then(function(dbArticle){
+            // console.log(dbArticle)
             res.json(dbArticle);
         })
         .catch(function(err){
@@ -72,8 +84,18 @@ app.get("/articles/:id", function(req, res){
   })
 
 app.post("/articles/:id", function(req, res){
+    console.log(req.body)
     db.Comments.create(req.body)
-})
+        .then((dbComment)=>{
+            return db.Article.findOneAndUpdate({_id:req.params.id},{comments: dbComment._id},{new:true});
+        })
+        .then((dbArticle)=>{
+            res.json(dbArticle)
+        })
+        .catch((err)=>{
+            res.json(err)
+        })
+})      
 
 
 

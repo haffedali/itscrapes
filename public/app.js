@@ -8,16 +8,19 @@ $(document).on("click", "p", function(){
     $("#comments").empty();
     var thisId = $(this).attr("data-id");
     // thisId = "ObjectId(" + '"' + thisId + '"' + ")";
-    console.log(thisId)
     $.ajax({
         method: "GET",
         url: "/articles/" + thisId,
     })
       .then(function(data){
-        //   console.log(data);
+          console.log(data);
           $("#comments").append("<h2>" + data.title + "</h2>");
           $("#comments").append("<textarea id='bodyinput' name='body'></textarea>");
           $("#comments").append("<button data-id='"+data._id+"' id='savecomment'>Save Sucka!</button>");
+
+          if (data.comments) {
+              $("#bodyinput").val(data.comments.body)
+          }
       });
 });
 
